@@ -1,9 +1,8 @@
 use colored::Colorize;
-
 use crate::admintool_api;
 
-pub fn handle_list() {
-    let flags = admintool_api::get_feature_flags();
+pub fn handle_list(api: &admintool_api::AdmintoolApi) {
+    let flags = api.get_feature_flags();
     println!("Found {} flags.", flags.len());
 
     for flag in flags {
@@ -17,8 +16,8 @@ pub fn handle_list() {
     }
 }
 
-pub fn handle_enable(flag_name: &String) {
-    if admintool_api::enable_feature_flag(flag_name) {
+pub fn handle_enable(api: &admintool_api::AdmintoolApi, flag_name: &String) {
+    if api.enable_feature_flag(flag_name) {
         println!("'{}' is now activated", flag_name)
     }
 }

@@ -1,4 +1,5 @@
 use clap::{App, Arg, Command};
+use crate::admintool_api::AdmintoolApi;
 
 mod admintool_api;
 mod featureflag;
@@ -31,17 +32,19 @@ fn init_cli() -> clap::App<'static> {
 }
 
 fn main() {
+    let api = AdmintoolApi::new("http://localhost/admintool/api".to_string());
+    
     let app = init_cli();
     let matches = app.get_matches();
 
     match matches.subcommand() {
         Some(("ff", sub_matches)) => {
             if sub_matches.is_present("list") {
-                featureflag::handle_list();
+                featureflag::handle_list(&api);
             }
-            if sub_matches.is_present("enable") {
-                let a = sub_matches.get_one::<String>("enable").expect("required");
-                featureflag::handle_enable(a);
+            else if sub_matches.is_present("enable") {
+                let flag_name = sub_matches.get_one::<String>("enable").expect("required");
+                featureflag::handle_enable(&api, flag_name);
             }
         }
         _ => {
